@@ -1,0 +1,11 @@
+[package]
+name = "structenv"
+version = "1.0.0"
+authors = ["paul <paul@hupaul.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+structenv-derive = {path = "../structenv-derive"}
+dotenv = "0.15.0"
