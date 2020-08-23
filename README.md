@@ -8,7 +8,7 @@ deserialize environment variables into rust structs and serialize struct to `.en
 
 ```Cargo.toml
 [dependencies]
-structenv          = "1.0.0"
+structenv = {git = "https://github.com/paulzql/structenv"}
 ```
 
 ## Example
