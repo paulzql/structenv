@@ -2,6 +2,12 @@
 name = "structenv"
 version = "1.0.0"
 authors = ["paul <paul@hupaul.com>"]
+repository = "https://github.com/paulzql/structenv"
+keywords = ["struct", "enviroment", "dotenv", "derive"]
+categories = ["command-line-interface"]
+license = "MIT"
+readme = "../README.md"
+description = "deserialize environment variables into rust structs and serialize struct to `.env` file"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
