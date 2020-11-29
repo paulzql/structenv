@@ -1,6 +1,6 @@
 [package]
 name = "structenv-derive"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["paul <paul@hupaul.com>"]
 repository = "https://github.com/paulzql/structenv"
 keywords = ["struct", "enviroment", "dotenv", "derive"]

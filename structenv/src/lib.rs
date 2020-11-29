@@ -38,6 +38,9 @@ pub fn save_env<T: EnvParser>(parser: &T, filename: &str) -> std::io::Result<()>
         let kv: Vec<&str> = line.splitn(2, "=").collect();
         let key = kv[0].to_string();
         if let Some(value) = envs.remove(&key) {
+            if value.as_str().find(" ").is_some() || value.as_str().find("=").is_some() {
+                return format!("{}={:?}", key, value);
+            }
             return format!("{}={}", key, value);
         }
         line.to_string()
