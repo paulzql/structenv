@@ -62,12 +62,12 @@ pub fn struct_env_fn(input: TokenStream) -> TokenStream {
             pub fn get_env() -> std::io::Result<#ident> {
                 #ident::read_env("", "")
             }
-            pub fn load_env() -> std::io::Result<#ident> {
-                structenv::dotenv::dotenv().ok();
+            pub fn load_env(path: &str) -> std::io::Result<#ident> {
+                structenv::dotenv::from_path(path).ok();
                 #ident::read_env("", "")
             }
-            pub fn save_env(&self) -> std::io::Result<()> {
-                structenv::save_env(self, ".env")
+            pub fn save_env(&self, path: &str) -> std::io::Result<()> {
+                structenv::save_env(self, path)
             }
         }
     );
