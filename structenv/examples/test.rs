@@ -20,9 +20,10 @@ fn main() {
     //println!("dir: {}", std::env::current_dir().unwrap().to_str().unwrap());
     //std::env::set_var("INNER_FOO", "WOLRD");
     //println!("LEVEL={}", std::env::var("LEVEL").unwrap());
-    let mut test = Test::load_env().unwrap();
-    println!("{}", test.to_env("", ""));
+    let path = "target/debug/test.env";
+    let mut test = Test::load_env(path).unwrap();
+    println!("{:?}", test.to_env("", ""));
     test.inner.foo = "hello world".to_string();
-    test.str = "hello-world".to_string();
-    test.save_env().unwrap();
+    test.str = "hello\n-world".to_string();
+    test.save_env(path).unwrap();
 }

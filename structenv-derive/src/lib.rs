@@ -52,9 +52,14 @@ pub fn struct_env_fn(input: TokenStream) -> TokenStream {
                     #(#fields: #types::read_env(#keys, &format!("{}{}", prefix, #prefixes))?,)*
                 })
             }
-            fn to_env(&self, key: &str, prefix: &str) -> String {
-                let envs: Vec<String> = vec![#(self.#fields.to_env(&#keys, &format!("{}{}", prefix, #prefixes)),)*];
-                envs.join("\n")
+            fn to_env(&self, key: &str, prefix: &str) -> std::collections::HashMap<String, String> {
+                let mut envs = std::collections::HashMap::new();
+                for item in vec![#(self.#fields.to_env(&#keys, &format!("{}{}", prefix, #prefixes)),)*] {
+                    for (k, v) in item.into_iter() {
+                        envs.insert(k, v);
+                    }
+                }
+                envs
             }
         }
 

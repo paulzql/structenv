@@ -1,10 +1,11 @@
 
 pub use structenv_derive::StructEnv;
 pub use dotenv;
+use std::collections::HashMap;
 
 pub trait EnvParser: Sized {
     fn read_env(key: &str, prefix: &str) -> std::io::Result<Self>;
-    fn to_env(&self, _key: &str, prefix: &str) -> String;
+    fn to_env(&self, _key: &str, prefix: &str) -> HashMap<String, String>;
 }
 
 impl <T> EnvParser for T
@@ -13,8 +14,10 @@ impl <T> EnvParser for T
         fn read_env(key: &str, prefix: &str) -> std::io::Result<Self> {
             parse_env::<Self>(&format!("{}{}", prefix, key))
         }
-        fn to_env(&self, key: &str, prefix: &str) -> String {
-            format!("{}{}={}", prefix, key, self.to_string())
+        fn to_env(&self, key: &str, prefix: &str) -> HashMap<String, String> {
+            let mut map = HashMap::new();
+            map.insert(format!("{}{}", prefix, key), self.to_string());
+            map
         } 
     }
 
@@ -29,26 +32,31 @@ pub fn save_env<T: EnvParser>(parser: &T, filename: &str) -> std::io::Result<()>
     if !std::path::Path::new(filename).exists() {
         std::fs::File::create(filename).ok();
     }
-    let mut envs: std::collections::HashMap<String,String> = parser.to_env("", "").lines().map(|line| {
-        let kv: Vec<&str> = line.splitn(2, "=").collect();
-        std::env::set_var(kv[0], kv[1]);
-        (kv[0].to_string(), kv[1].to_string())
-    }).collect();
+    let mut envs: std::collections::HashMap<String,String> = parser.to_env("", "");
+    for (k, v) in envs.iter() {
+        std::env::set_var(k, v);
+    }
     let mut lines: Vec<String> = std::fs::read_to_string(filename)?.lines().map(|line| {
         let kv: Vec<&str> = line.splitn(2, "=").collect();
         let key = kv[0].to_string();
         if let Some(value) = envs.remove(&key) {
-            if value.as_str().find(" ").is_some() || value.as_str().find("=").is_some() {
-                return format!("{}={:?}", key, value);
-            }
-            return format!("{}={}", key, value);
+            format_env(&key, value.as_str())
+        } else {
+            line.to_string()
         }
-        line.to_string()
     }).collect();
     for (k, v) in envs.iter() {
-        lines.push(format!("{}={}", k, v));
+        lines.push(format_env(&k, &v));
     }
     std::fs::write(filename, lines.join("\n"))    
+}
+
+fn format_env(k: &str, v: &str) -> String {
+    if v.find(" ").is_some() || v.find("=").is_some() || v.find("\n").is_some() {
+        format!("{}={:?}", k, v)
+    } else {
+        format!("{}={}", k, v)
+    }
 }
 
 #[test]
