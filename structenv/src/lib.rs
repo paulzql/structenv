@@ -64,8 +64,8 @@ fn test_loader() {
     use EnvParser;
 
     let x: i32 = 100;
-    assert_eq!(x.to_env("V", ""), "V=100");
+    assert_eq!(x.to_env("V", "").get("V").unwrap(), "100");
 
     let y: String = "world".to_string();
-    assert_eq!(y.to_env("HELLO", ""), "HELLO=world");
+    assert_eq!(y.to_env("HELLO", "").get("HELLO").unwrap(), "world");
 }
